@@ -112,7 +112,7 @@ void IpaDirtDetection::ServerDirtDetection::dirtDetectionActionCallback(const ba
 	if (debug_["show_dirt_detections"] == true)
 	{
 		cv::imshow("dirt detections", new_plane_color_image);
-		cvMoveWindow("dirt detections", 650, 530);
+		cv::moveWindow("dirt detections", 650, 530);
 		cv::waitKey(10);
 	}
 
@@ -424,7 +424,7 @@ void IpaDirtDetection::ServerDirtDetection::Image_Postprocessing_C1_rmb(const cv
 	if (debug_["show_saliency_bad_scale"] == true)
 	{
 		cv::imshow("bad scale", badscale);
-		cvMoveWindow("bad scale", 650, 0);
+		cv::moveWindow("bad scale", 650, 0);
 	}
 	//cvMoveWindow("bad scale", 650, 520);
 //	cv::Scalar mean, stdDev;
@@ -467,7 +467,7 @@ void IpaDirtDetection::ServerDirtDetection::Image_Postprocessing_C1_rmb(const cv
 	if (debug_["show_saliency_detection"] == true)
 	{
 		cv::imshow("saliency detection", scaled_C1_saliency_image);
-		cvMoveWindow("saliency detection", 0, 530);
+		cv::moveWindow("saliency detection", 0, 530);
 	}
 
 	//set dirt pixel to white

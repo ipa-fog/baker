@@ -216,6 +216,7 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 
 		if (is_warp_image_bird_perspective_enabled_)
 		{
+
 			bool transformSuccessful = computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t,
 				 camera_image_plane_offset, plane_color_image_warped, plane_mask_warped);
 			if (!transformSuccessful)
@@ -242,7 +243,7 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 		if (debug_["show_plane_color_image"])
 		{
 			cv::imshow("segmented color image", plane_color_image);
-			cvMoveWindow("segmented color image", 650, 0);
+			cv::moveWindow("segmented color image", 650, 0);
 			cv::waitKey(10);
 		}
 
@@ -380,10 +381,10 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 	std::cout << "Time for dirt detection: " << tim.getElapsedTimeInMilliSec() << "ms." << std::endl;
 
 	// todo: publish detections
-//	cv_bridge::CvImage cv_ptr;
-//	cv_ptr.image = plane_color_image_display;
-//	cv_ptr.encoding = "bgr8";
-//	dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
+	cv_bridge::CvImage cv_ptr;
+	cv_ptr.image = plane_color_image;
+	cv_ptr.encoding = "bgr8";
+	dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
 
 	ROS_INFO("Finished IpaDirtDetectionSpectral successfully.\n"); // no it's not finished here
 }
@@ -409,7 +410,7 @@ bool IpaDirtDetectionPreprocessing::ClientPreprocessing::planeSegmentation(pcl::
 
 		//display original image
 		cv::imshow("original color image", color_image);
-		cvMoveWindow("original color image", 0, 0);
+		cv::moveWindow("original color image", 0, 0);
 		cv::waitKey(1);
 		if (debug_["save_data_for_test"] == true)
 		{
