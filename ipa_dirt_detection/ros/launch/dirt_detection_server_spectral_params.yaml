@@ -12,7 +12,7 @@ spectral_residual_normalization_highest_max_value: 1500.0
 
 # if true, strong lines in the image will not produce dirt responses
 # bool
-remove_lines: false
+remove_lines: true
 
 # dirt threshold (in [0,1])
 # double
@@ -30,7 +30,7 @@ dirt_check_std_dev_factor: 3.0   #3.6
 show_warped_original_image: false
 
 # displays the detection results drawn into the color image
-show_dirt_detections: true #true
+show_dirt_detections: false #true
 
 # displays the color image with the artificial dirt added
 show_color_with_artificial_dirt: false
