@@ -73,7 +73,7 @@ void IpaDirtDetection::ServerDirtDetection::dynamicReconfigureCallback(ipa_dirt_
 
 void IpaDirtDetection::ServerDirtDetection::dirtDetectionActionCallback(const baker_msgs::DirtDetectionGoalConstPtr& goal)
 {
-	std::cout << "		Take action: Dirt detection." << std::endl;
+//	std::cout << "		Take action: Dirt detection." << std::endl;
 
 	//====================================================================
 	//This comes from action clients goals
@@ -144,7 +144,7 @@ void IpaDirtDetection::ServerDirtDetection::dirtDetectionActionCallback(const ba
 		cv_image.toImageMsg(res.dirt_detections_mask);
 	}
 
-	std::cout << "-----------------------------------------------------\nAction done. " << std::endl;
+//	std::cout << "-----------------------------------------------------\nAction done. " << std::endl;
 	dirt_detection_action_server_.setSucceeded(res);
 }
 
