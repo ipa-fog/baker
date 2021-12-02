@@ -1,6 +1,6 @@
 # for normal operation mode, specifies whether dirt detection is on right from the beginning
 # bool
-dirt_detection_activated_on_startup: false
+dirt_detection_activated_on_startup: true
 
 
 ### scales and resolution for pre-processing
@@ -23,10 +23,10 @@ bird_eye_base_resolution: 300.0
 # floor plane parameters [a,b,c,d] for plane equation (a*x + b*y + c*z + d = 0), the plane defines the image mask,
 # can be used for checking that the detected plane is similar to the target plane or to directly require this model without plane detection in the point cloud data
 # float with 4 numbers a, b, c, d
-floor_plane_model_a: 0.848
-floor_plane_model_b: 0.279
-floor_plane_model_c: 0.451
-floor_plane_model_d: -0.562
+floor_plane_model_a: 0.0
+floor_plane_model_b: 0.65
+floor_plane_model_c: 0.75
+floor_plane_model_d: -0.65
 
 # the number of attempts to segment the floor plane in the image,
 # if set to 0 the parameters of floor_plane_model will be used diectly as plane model without fitting a plane into the 3d data
@@ -49,7 +49,7 @@ max_distance_to_camera: 1.5
 ### image perspective normalization
 # if true, image warping to a bird's eye perspective is enabled
 # bool
-is_warp_image_bird_perspective_enabled: true
+is_warp_image_bird_perspective_enabled: false
 
 ###################################################################################################################
 ### debug display switches - enable or disable the display of several kinds of images
