@@ -21,6 +21,7 @@
 	<depend>dynamic_reconfigure</depend>
 	<depend>geometry_msgs</depend>
 	<depend>image_transport</depend>
+        <depend>ipa_perception_msgs</depend>
 	<depend>libopencv-dev</depend>
 	<depend>libpcl-all-dev</depend>
 	<depend>pcl_ros</depend>
@@ -29,4 +30,5 @@
 	<depend>sensor_msgs</depend>
 	<depend>std_msgs</depend>
 	<depend>std_srvs</depend>
+        <depend>vision_msgs</depend>
 </package>

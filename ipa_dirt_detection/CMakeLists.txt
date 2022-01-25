@@ -9,12 +9,14 @@ set(catkin_RUN_PACKAGES
 	dynamic_reconfigure
 	geometry_msgs
 	image_transport
+        ipa_perception_msgs
 	pcl_ros
 	roscpp
 	roslib
 	sensor_msgs
 	std_msgs
 	std_srvs
+        vision_msgs
 )
 
 set(catkin_BUILD_PACKAGES
