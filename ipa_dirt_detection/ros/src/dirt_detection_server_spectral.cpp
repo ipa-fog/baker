@@ -136,12 +136,12 @@ void IpaDirtDetection::ServerDirtDetection::dirtDetectionActionCallback(const ba
 		rect.width = dirt.size.width;
 		rect.height = dirt.size.height;
 		rect.angle = dirt.angle;
-		res.dirt_detections.push_back(rect);
+		res.detections.push_back(rect);
 		cv_bridge::CvImage cv_image;
 		cv_image.header = goal->plane_color_image_warped.header;
 		cv_image.image = dirt_detections_mask;
 		cv_image.encoding = sensor_msgs::image_encodings::BGR8;
-		cv_image.toImageMsg(res.dirt_detections_mask);
+		//cv_image.toImageMsg(res.dirt_detections_mask);
 	}
 
 //	std::cout << "-----------------------------------------------------\nAction done. " << std::endl;

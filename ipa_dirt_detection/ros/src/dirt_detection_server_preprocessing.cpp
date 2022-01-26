@@ -85,6 +85,9 @@ IpaDirtDetectionPreprocessing::ClientPreprocessing::ClientPreprocessing(ros::Nod
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 	dirt_detection_image_pub_ = it_->advertise("dirt_detection_image", 1);
+	
+	
+	pub_time_ = node_handle_.advertise<std_msgs::Header>("/dirt_detection/time", 1);
 
 	// services
 	activate_dirt_detection_service_server_ = node_handle_.advertiseService("activate_detection", &IpaDirtDetectionPreprocessing::ClientPreprocessing::activateDirtDetection, this);
@@ -162,6 +165,11 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 	// callback also takes 1-2 s of time, we might not want to wait for this. There is not so much performance lost doing this in the current way.
 
 	Timer tim;
+
+	// pub current time for projector sync
+	std_msgs::Header header;
+	header.stamp = ros::Time::now();
+	pub_time_.publish(header);
 
 	// get tf between camera and map
 	tf::StampedTransform transformMapCamera;	// todo: add parameter for preferred relative transform between camera z-axis and ground plane z-axis and check this in planeSegmentation()
@@ -250,7 +258,6 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 			cv::waitKey(10);
 		}
 
-
 		//================== Call ACTION CLIENT =====================================================================================
 		//setting up GOALS
 		baker_msgs::DirtDetectionGoal goal;
@@ -288,7 +295,7 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 
 //		std::cout << "=======================================================" << std::endl;
 //		std::cout << "Received RESULT from server.\n" << std::endl;
-		const size_t nb_detections = dirt_detection_client_.getResult()->dirt_detections.size();
+		const size_t nb_detections = dirt_detection_client_.getResult()->detections.size();
 		std::cout << "Number detections: " << nb_detections << " Time for dirt action: " << tim2.getElapsedTimeInMilliSec() << "ms." << std::endl;
 
 		// output msg
@@ -298,7 +305,7 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 		for (size_t i = 0; i < nb_detections; ++i) //rescale, find coordinates for, and publish all dirts detected
 		{
 			// todo: rescale dirt detections with 1./image_scaling_
-			const baker_msgs::RotatedRect& detection = dirt_detection_client_.getResult()->dirt_detections[i];
+			const baker_msgs::RotatedRect& detection = dirt_detection_client_.getResult()->detections[i];
 			const cv::Rect dirt_warped = cv::RotatedRect(cv::Point2f(detection.center_x*1./image_scaling_, detection.center_y*1./image_scaling_),
 					cv::Size2f(detection.width*1./image_scaling_, detection.height*1./image_scaling_), detection.angle).boundingRect();
 
@@ -306,6 +313,7 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 			const int min_u = std::max(0, dirt_warped.x);
 			const int max_v = std::min(int(dirt_warped.y + dirt_warped.height), plane_color_image_warped.rows-1);
 			const int max_u = std::min(int(dirt_warped.x + dirt_warped.width), plane_color_image_warped.cols-1);
+                        const std::string class_name = dirt_detection_client_.getResult()->object_classes[i]; 
 
 			Eigen::Vector3f centroid(0, 0, 0);
 			Eigen::Vector3f maxPoint(std::numeric_limits<float>::min(), std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
@@ -355,14 +363,28 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 			centroid.x() /= nb_points;
 			centroid.y() /= nb_points;
 			centroid.z() /= nb_points;
-
-
+                       
 			// set 2d BB
                         ipa_perception_msgs::BoundingBox2D bb2d;
                         bb2d.x_min = detection.center_x - 0.5 * detection.width;
                         bb2d.y_min = detection.center_y - 0.5 * detection.height;
                         bb2d.x_max = detection.center_x + 0.5 * detection.width;
                         bb2d.y_max = detection.center_y + 0.5 * detection.height;
+
+
+                        cv::putText(plane_color_image, //target image
+                                    class_name, //text
+                                    cv::Point(bb2d.x_min - 10, bb2d.y_min), //top-left position
+                                    cv::FONT_HERSHEY_DUPLEX,
+                                    1.0,
+                                    CV_RGB(118, 185, 0), //font color
+                                    2);
+
+                        // draw bb into image
+                        cv::Rect rect (bb2d.x_min, bb2d.y_min, detection.width, detection.height);
+                        if(class_name == "dirt")
+                        {
+                        cv::rectangle(plane_color_image, rect, cv::Scalar(0, 255, 0));
                         
                         // set pose
                         geometry_msgs::Pose dirt_pose;
@@ -388,6 +410,11 @@ void IpaDirtDetectionPreprocessing::ClientPreprocessing::preprocessingCallback(c
 			detection_msg.poses.push_back(dirt_pose);
 
 			detection_msgs.detections.push_back(detection_msg);
+                        }
+
+                        else
+                            cv::rectangle(plane_color_image, rect, cv::Scalar(255, 0, 0));
+
 		}
 		//todo: publish coordinates and rects
 		dirt_detected_.publish(detection_msgs);

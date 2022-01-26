@@ -3,7 +3,7 @@ sensor_msgs/Image plane_mask_warped                      #
 
 ---
 
-RotatedRect[] dirt_detections
-RotatedRect[] object_detections
+RotatedRect[] detections
+string[] object_classes
 
 ---

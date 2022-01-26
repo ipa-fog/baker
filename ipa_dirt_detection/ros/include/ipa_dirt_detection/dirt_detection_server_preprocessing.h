@@ -126,6 +126,9 @@ protected:
 		//Publisher for the detected dirt
 		ros::Publisher dirt_detected_;
 
+                // Publisher for the ros time for viz sync
+                ros::Publisher pub_time_;
+
 		//For received result from action server: Means image with positions of dirt
 		image_transport::Publisher dirt_detection_image_pub_; // topic for publishing the image containing the dirt positions
 
